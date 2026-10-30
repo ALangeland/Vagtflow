@@ -2,7 +2,7 @@
 
 En lille editor til at bygge tidslinjer for vagtfunktioner – fx ASA-vagten – og gemme dem som PDF i A4 eller A5 til udprint.
 
-**[Åbn editoren](https://alangeland.github.io/vagtflow/)** · [Se koden i index.html](index.html)
+**[Åbn editoren](https://alangeland.github.io/Vagtflow/)** · [Se koden i index.html](index.html)
 
 ## Brug
 
