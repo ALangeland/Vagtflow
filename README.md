@@ -8,11 +8,19 @@ En lille editor til at bygge tidslinjer for vagtfunktioner – fx ASA-vagten –
 
 Åbn editoren via linket ovenfor, eller download [index.html](index.html) og åbn filen i en browser. Der er ingen installation eller server.
 
-- **Faser og trin:** Tilføj faser (fx "Eftermiddag", "Morgen") som overskrifter og trin med tidspunkt, titel, beskrivelse, ikon og farve.
-- **Sortering:** Træk i ⠿ for at flytte trin og faser, eller brug pilene.
-- **Punkter:** Linjer i beskrivelsen, der starter med `-` eller `•`, bliver til punktopstilling.
-- **PDF:** Vælg A4 eller A5, stående eller liggende, og tryk "Gem som PDF". Lange flows deles over flere sider mellem trinene.
-- **Visningstilstand:** Skjuler editoren, så kun tidslinjen vises.
+Editoren er delt i tre faneblade:
+
+- **Indhold:** Titel, faser og trin. Klik på et trin for at folde det ud og redigere tid, titel, beskrivelse, ikon og farve. Træk i ⠿ for at flytte trin og faser.
+- **Layout og print:** Titelplacering, dato og version på arket og placering af krediteringen.
+- **Fil og backup:** Gem og åbn flows som fil, eller kopiér dem som tekst.
+
+Andre funktioner:
+
+- **Fortryd og gendan:** Ctrl+Z og Ctrl+Y (Cmd på Mac) eller knapperne i værktøjslinjen.
+- **Fed skrift:** Skriv `**tekst**`, eller markér tekst og tryk **F** eller Ctrl+B. Linjer, der starter med `-`, bliver til punkter.
+- **Dato og version:** Vises øverst til højre på arket. Datoen opdateres automatisk, når flowet ændres, og "Ny version" tæller versionsnummeret op.
+- **PDF:** A4 eller A5, stående eller liggende, eller **2 × A5 på ét A4-ark** med klippelinje. Indholdet fylder altid formatet.
+- **Visningstilstand:** Viser arket præcis, som det bliver printet.
 
 ## Eksempel: ASA Vagt
 
