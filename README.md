@@ -9,6 +9,7 @@ En lille editor til at bygge tidslinjer for vagtfunktioner – fx ASA-vagten –
 Åbn editoren via linket ovenfor, eller download [index.html](index.html) og åbn filen i en browser. Der er ingen installation eller server.
 
 - **Faser og trin:** Tilføj faser (fx "Eftermiddag", "Morgen") som overskrifter og trin med tidspunkt, titel, beskrivelse, ikon og farve.
+- **Sortering:** Træk i ⠿ for at flytte trin og faser, eller brug pilene.
 - **Punkter:** Linjer i beskrivelsen, der starter med `-` eller `•`, bliver til punktopstilling.
 - **PDF:** Vælg A4 eller A5, stående eller liggende, og tryk "Gem som PDF". Lange flows deles over flere sider mellem trinene.
 - **Visningstilstand:** Skjuler editoren, så kun tidslinjen vises.
