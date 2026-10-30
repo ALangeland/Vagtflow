@@ -214,15 +214,15 @@ const ICONS={
 const iconSVG=(k,size,stroke)=>ICONS[k]?`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${stroke||"currentColor"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k].s}</svg>`:"";
 const KEY="vagtflow-editor-v1";
 const uid=()=>Math.random().toString(36).slice(2,9);
-const T="#1d9e75",L="#6a5fd0";
-const seed=()=>({id:uid(),name:"ASA-vagt",steps:[
-  {id:uid(),type:"phase",title:"Eftermiddag",color:T},
-  {id:uid(),time:"Inden 17:00",title:"Fordel ufordelte patienter på Cetrea",text:"Akut medicin → lunge, gastro, infektion, endokrinologi, nyre",color:T,icon:"fordel"},
-  {id:uid(),time:"Inden 17:00",title:"Opret stuegangsaktivitet på Cetrea-tavlen",text:"Så specialisterne kan se, hvem de går stuegang på",color:T,icon:"tavle"},
-  {id:uid(),type:"phase",title:"Morgen",color:L},
-  {id:uid(),time:"Morgen",title:"Find patient til Hobro",text:"Skriv gennemgangsnotat – og se helst patienten",color:L,icon:"notat"},
-  {id:uid(),time:"07:30",title:"Meld patienten til Hobro",text:"",color:L,icon:"telefon"},
-  {id:uid(),time:"Konference",title:"Fælles morgenkonference",text:"- Print stuegangsseddel via Skyprint\n- Præsentér dårlige patienter fra vagten\n- Nævn totalt antal indlagte",color:L,icon:"konference"}]});
+const T="#2f80d1",L="#5a9a22",A="#c98a12";
+const seed=()=>({id:uid(),name:"ASA Vagt",titleAlign:"center",credit:"bottom",steps:[
+  {id:uid(),time:"15:00",title:"Overtag telefonen fra afgående vagt",text:"ASA Konference lokale.",color:T,icon:"telefon"},
+  {id:uid(),time:"Inden 17:00",title:"Ufordelte patienter på Cetrea fordeles til specialerne.",text:"Nye patienter med markeringen \"Akut medicin\" fordeles til specialerne.\n\"Akut\" Lunge + Gastro + Infektion + Endo + Nyre.",color:T,icon:"fordel"},
+  {id:uid(),time:"Inden 17:00",title:"Stuegangsaktiviteter",text:"Der oprettes \"Aften\"-stuegangs aktiviteter på patienterne så de figurere for de stuegangsgående læger.",color:T,icon:"tavle"},
+  {id:uid(),time:"Morgen",title:"Udvælg patient til overflytning til Hobro.",text:"Vurdering af patienten og udfærdigelse af overleveringsnotat med klinisk status.",color:L,icon:"patient"},
+  {id:uid(),time:"07:30",title:"Meld patienten Medicinsk Bagvagt i Hobro",text:"",color:L,icon:"telefon"},
+  {id:uid(),time:"Før Konference",title:"Fælles morgenkonference",text:"- Print stuegangsseddel via Skyprint",color:A,icon:"print"},
+  {id:uid(),time:"08:00",title:"Morgenkonference",text:"- Print stuegangsseddel via Skyprint\n- Præsentér dårlige patienter fra vagten\n- Nævn totalt antal indlagte",color:A,icon:"konference"}]});
 
 let state;
 try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -367,7 +367,7 @@ $("flow-name").oninput=e=>{cur().name=e.target.value;renderSelect();renderPrevie
 ["al-left","al-center"].forEach(id=>$(id).onclick=e=>{cur().titleAlign=e.currentTarget.dataset.align;renderAlign();renderPreview();save()});
 $("flow-select").onchange=e=>{state.cur=e.target.value;renderAll()};
 $("btn-new").onclick=()=>{const f={id:uid(),name:"Nyt flow",steps:[{id:uid(),time:"",title:"",text:"",icon:"",color:PALETTE[0].h}]};state.flows.push(f);state.cur=f.id;renderAll();$("flow-name").select()};
-$("btn-example").onclick=()=>{const f=seed();f.name="ASA-vagt (eksempel)";state.flows.push(f);state.cur=f.id;renderAll()};
+$("btn-example").onclick=()=>{const f=seed();f.name="ASA Vagt (eksempel)";state.flows.push(f);state.cur=f.id;renderAll()};
 $("btn-dup").onclick=()=>{const c=JSON.parse(JSON.stringify(cur()));c.id=uid();c.name+=" (kopi)";c.steps.forEach(s=>s.id=uid());state.flows.push(c);state.cur=c.id;renderAll()};
 $("btn-del").onclick=()=>{
   const f=cur();

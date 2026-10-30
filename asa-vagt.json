@@ -1,49 +1,55 @@
 {
-  "name": "ASA-vagt",
+  "name": "ASA Vagt",
+  "titleAlign": "center",
+  "credit": "bottom",
   "steps": [
     {
-      "type": "phase",
-      "title": "Eftermiddag",
-      "color": "#1d9e75"
+      "time": "15:00",
+      "title": "Overtag telefonen fra afgående vagt",
+      "text": "ASA Konference lokale.",
+      "color": "#2f80d1",
+      "icon": "telefon"
     },
     {
       "time": "Inden 17:00",
-      "title": "Fordel ufordelte patienter på Cetrea",
-      "text": "Akut medicin → lunge, gastro, infektion, endokrinologi, nyre",
-      "color": "#1d9e75",
+      "title": "Ufordelte patienter på Cetrea fordeles til specialerne.",
+      "text": "Nye patienter med markeringen \"Akut medicin\" fordeles til specialerne.\n\"Akut\" Lunge + Gastro + Infektion + Endo + Nyre.",
+      "color": "#2f80d1",
       "icon": "fordel"
     },
     {
       "time": "Inden 17:00",
-      "title": "Opret stuegangsaktivitet på Cetrea-tavlen",
-      "text": "Så specialisterne kan se, hvem de går stuegang på",
-      "color": "#1d9e75",
+      "title": "Stuegangsaktiviteter",
+      "text": "Der oprettes \"Aften\"-stuegangs aktiviteter på patienterne så de figurere for de stuegangsgående læger.",
+      "color": "#2f80d1",
       "icon": "tavle"
     },
     {
-      "type": "phase",
-      "title": "Morgen",
-      "color": "#6a5fd0"
-    },
-    {
       "time": "Morgen",
-      "title": "Find patient til Hobro",
-      "text": "Skriv gennemgangsnotat – og se helst patienten",
-      "color": "#6a5fd0",
-      "icon": "notat"
+      "title": "Udvælg patient til overflytning til Hobro.",
+      "text": "Vurdering af patienten og udfærdigelse af overleveringsnotat med klinisk status.",
+      "color": "#5a9a22",
+      "icon": "patient"
     },
     {
       "time": "07:30",
-      "title": "Meld patienten til Hobro",
+      "title": "Meld patienten Medicinsk Bagvagt i Hobro",
       "text": "",
-      "color": "#6a5fd0",
+      "color": "#5a9a22",
       "icon": "telefon"
     },
     {
-      "time": "Konference",
+      "time": "Før Konference",
       "title": "Fælles morgenkonference",
+      "text": "- Print stuegangsseddel via Skyprint",
+      "color": "#c98a12",
+      "icon": "print"
+    },
+    {
+      "time": "08:00",
+      "title": "Morgenkonference",
       "text": "- Print stuegangsseddel via Skyprint\n- Præsentér dårlige patienter fra vagten\n- Nævn totalt antal indlagte",
-      "color": "#6a5fd0",
+      "color": "#c98a12",
       "icon": "konference"
     }
   ]

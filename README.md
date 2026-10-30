@@ -14,14 +14,16 @@ En lille editor til at bygge tidslinjer for vagtfunktioner – fx ASA-vagten –
 - **PDF:** Vælg A4 eller A5, stående eller liggende, og tryk "Gem som PDF". Lange flows deles over flere sider mellem trinene.
 - **Visningstilstand:** Skjuler editoren, så kun tidslinjen vises.
 
-## Eksempel: ASA-vagt
+## Eksempel: ASA Vagt
 
-Editoren starter med ASA-vagten som eksempel, delt i to faser:
+Editoren starter med ASA-vagten som eksempel:
 
-- **Eftermiddag (inden 17:00):** Fordel ufordelte patienter på Cetrea mellem lunge, gastro, infektion, endokrinologi og nyre, og opret stuegangsaktivitet på Cetrea-tavlen.
-- **Morgen:** Find patient til Hobro og skriv gennemgangsnotat, meld patienten til Hobro kl. 07.30, og til morgenkonferencen printes stuegangsseddel via Skyprint, dårlige patienter præsenteres, og antal indlagte nævnes.
+- **15:00:** Overtag telefonen fra afgående vagt i ASA-konferencelokalet.
+- **Inden 17:00:** Fordel ufordelte patienter med "Akut medicin" på Cetrea til lunge, gastro, infektion, endokrinologi og nyre, og opret "Aften"-stuegangsaktiviteter, så de stuegangsgående læger kan se patienterne.
+- **Morgen:** Udvælg en patient til overflytning til Hobro med vurdering og overleveringsnotat, og meld patienten til medicinsk bagvagt i Hobro kl. 07.30.
+- **Morgenkonference kl. 08.00:** Print stuegangsseddel via Skyprint inden konferencen, præsentér dårlige patienter fra vagten, og nævn det totale antal indlagte.
 
-Har du allerede egne flows, kan du hente eksemplet ind med knappen **Indlæs ASA-eksempel**. Det ligger også som [asa-vagt.json](asa-vagt.json), som kan indsættes under "Backup og import".
+Har du allerede egne flows, kan du hente eksemplet ind med knappen **Indlæs ASA-eksempel**. Det ligger også som [asa-vagt.json](asa-vagt.json), som kan åbnes med "Åbn fil" under "Backup og import".
 
 ## Data
 
