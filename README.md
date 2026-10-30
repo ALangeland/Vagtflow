@@ -2,9 +2,11 @@
 
 En lille editor til at bygge tidslinjer for vagtfunktioner – fx ASA-vagten – og gemme dem som PDF i A4 eller A5 til udprint.
 
+**[Åbn editoren](https://alangeland.github.io/vagtflow/)** · [Se koden i index.html](index.html)
+
 ## Brug
 
-Åbn `index.html` i en browser. Der er ingen installation eller server.
+Åbn editoren via linket ovenfor, eller download [index.html](index.html) og åbn filen i en browser. Der er ingen installation eller server.
 
 - **Faser og trin:** Tilføj faser (fx "Eftermiddag", "Morgen") som overskrifter og trin med tidspunkt, titel, beskrivelse, ikon og farve.
 - **Punkter:** Linjer i beskrivelsen, der starter med `-` eller `•`, bliver til punktopstilling.
