@@ -65,6 +65,9 @@ body.is-dragging{user-select:none;cursor:grabbing}
 .seg{font-size:13px;padding:4px 10px}
 .savest{font-size:13px;color:var(--muted)}
 .credit{font-size:12px;color:var(--muted);text-align:center;padding-top:6px}
+.pv-credit{font-size:11px;letter-spacing:.04em;color:var(--muted);opacity:.85}
+.pv-credit.top{margin-bottom:-6px}
+.pv-credit.bottom{text-align:center;margin-top:4px;border-top:1px solid var(--line);padding-top:8px}
 .savest.ok{color:var(--accent);font-weight:500}
 .savest.err{color:#c0392b}
 .seg[aria-pressed=true]{border-color:var(--accent);color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
@@ -136,6 +139,12 @@ body.present .grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 
           <button type="button" class="seg" id="al-left" data-align="left">Venstrestillet</button>
           <button type="button" class="seg" id="al-center" data-align="center">Centreret</button>
         </div>
+        <div class="bar" role="group" aria-label="Kreditering" style="gap:6px;margin-top:4px">
+          <span class="hint">Kreditering:</span>
+          <button type="button" class="seg" id="cr-bottom" data-credit="bottom">I bunden</button>
+          <button type="button" class="seg" id="cr-top" data-credit="top">Vandmærke i toppen</button>
+          <button type="button" class="seg" id="cr-none" data-credit="none">Ingen</button>
+        </div>
       </div>
       <div class="label">Faser og trin</div>
       <div id="steps" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -166,8 +175,10 @@ body.present .grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 
     </section>
 
     <section class="panel preview" aria-label="Forhåndsvisning">
+      <div class="pv-credit top" id="pv-credit-top" hidden></div>
       <h2 class="pv-title" id="pv-title"></h2>
       <div class="tl" id="pv"></div>
+      <div class="pv-credit bottom" id="pv-credit-bottom" hidden></div>
     </section>
   </div>
   <footer class="credit">Flowchart udarbejdet med Vagtflow · udviklet af Asbjørn Langeland</footer>
@@ -235,6 +246,10 @@ function renderPreview(){
   const f=cur();
   $("pv-title").textContent=f.name||"Uden titel";
   $("pv-title").style.textAlign=f.titleAlign==="center"?"center":"left";
+  const cr=creditMode(f);
+  $("pv-credit-top").hidden=cr!=="top";$("pv-credit-bottom").hidden=cr!=="bottom";
+  $("pv-credit-top").textContent=$("pv-credit-bottom").textContent=CREDIT;
+  $("pv-credit-top").style.textAlign=f.titleAlign==="center"?"center":"left";
   if(!f.steps.length){$("pv").innerHTML='<div class="empty">Tilføj et trin for at se tidslinjen.</div>';return}
   $("pv").innerHTML=f.steps.map(s=>{
     if(isPhase(s))return `<div class="tl-phase" style="--c:${esc(s.color)}"><div></div><div class="mk"></div><div class="pt">${esc(s.title||"Fase")}</div></div>`;
@@ -281,7 +296,10 @@ function renderSteps(){
   const f=cur();
   $("steps").innerHTML=f.steps.map((s,i)=>stepHTML(s,i,f.steps.length)).join("")||'<div class="empty">Ingen trin endnu.</div>';
 }
-function renderAlign(){const a=cur().titleAlign==="center"?"center":"left";$("al-left").setAttribute("aria-pressed",a==="left");$("al-center").setAttribute("aria-pressed",a==="center")}
+const CREDIT="Flowchart udarbejdet med Vagtflow \u00b7 udviklet af Asbj\u00f8rn Langeland";
+const creditMode=f=>["top","none"].includes(f.credit)?f.credit:"bottom";
+function renderAlign(){const f=cur(),a=f.titleAlign==="center"?"center":"left";$("al-left").setAttribute("aria-pressed",a==="left");$("al-center").setAttribute("aria-pressed",a==="center");
+  const c=creditMode(f);["bottom","top","none"].forEach(k=>$("cr-"+k).setAttribute("aria-pressed",c===k))}
 function renderAll(){$("flow-name").value=cur().name;renderAlign();renderSelect();renderSteps();renderPreview();save()}
 
 function setColor(f,i,newC){
@@ -339,6 +357,7 @@ $("btn-add-phase").onclick=()=>{const f=cur(),used=f.steps.filter(isPhase).map(p
   const s={id:uid(),type:"phase",title:"",color:c};f.steps.push(s);renderSteps();renderPreview();save();
   const el=$("h-"+s.id);el&&el.focus()};
 $("flow-name").oninput=e=>{cur().name=e.target.value;renderSelect();renderPreview();save()};
+["cr-bottom","cr-top","cr-none"].forEach(id=>$(id).onclick=e=>{cur().credit=e.currentTarget.dataset.credit;renderAlign();renderPreview();save()});
 ["al-left","al-center"].forEach(id=>$(id).onclick=e=>{cur().titleAlign=e.currentTarget.dataset.align;renderAlign();renderPreview();save()});
 $("flow-select").onchange=e=>{state.cur=e.target.value;renderAll()};
 $("btn-new").onclick=()=>{const f={id:uid(),name:"Nyt flow",steps:[{id:uid(),time:"",title:"",text:"",icon:"",color:PALETTE[0].h}]};state.flows.push(f);state.cur=f.id;renderAll();$("flow-name").select()};
@@ -366,7 +385,7 @@ function importText(txt){
   let d;try{d=JSON.parse(txt)}catch(e){$("io-msg").textContent="Kunne ikke læse teksten. Indsæt JSON kopieret fra denne editor.";return}
   const arr=(Array.isArray(d)?d:[d]).filter(f=>f&&Array.isArray(f.steps));
   if(!arr.length){$("io-msg").textContent="Fandt ingen flows i teksten.";return}
-  arr.forEach(f=>{f.id=uid();f.name=String(f.name||"Importeret flow");f.titleAlign=f.titleAlign==="center"?"center":"left";
+  arr.forEach(f=>{f.id=uid();f.name=String(f.name||"Importeret flow");f.titleAlign=f.titleAlign==="center"?"center":"left";f.credit=creditMode(f);
     f.steps=f.steps.map(s=>{const c=okHex(s.color)?s.color:PALETTE[0].h;
       return s.type==="phase"?{id:uid(),type:"phase",title:String(s.title||""),color:c}
         :{id:uid(),time:String(s.time||""),title:String(s.title||""),text:String(s.text||""),icon:ICONS[s.icon]?s.icon:"",color:c}});
@@ -420,7 +439,8 @@ function buildExport(f,widthPx,small){
         ${plain.map(p=>`<div style="font-size:14px;margin-top:3px;color:${tc}">${esc(p)}</div>`).join("")}
         ${bullets.length?`<ul style="margin:5px 0 0;padding-left:20px">${bullets.map(b=>`<li style="font-size:14px;margin-top:2px;color:${tc}">${esc(b)}</li>`).join("")}</ul>`:""}
       </div></div></div>`}).join("");
-  node.innerHTML=`<div style="font-size:24px;font-weight:600;margin-bottom:22px;letter-spacing:-.01em;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(f.name||"Uden titel")}</div>
+  const crTop=creditMode(f)==="top"?`<div style="font-size:11px;letter-spacing:.04em;color:#97a3a1;margin-bottom:8px;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(CREDIT)}</div>`:"";
+  node.innerHTML=crTop+`<div style="font-size:24px;font-weight:600;margin-bottom:22px;letter-spacing:-.01em;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(f.name||"Uden titel")}</div>
     <div style="position:relative">
       <div style="position:absolute;left:${tw+23}px;top:14px;bottom:30px;width:1px;background:#d8dfde"></div>${rows}</div>`;
   document.body.appendChild(node);
@@ -458,9 +478,12 @@ $("btn-pdf").onclick=async()=>{
         first=false;start=cut;
       }
     }
-    const credit="Flowchart udarbejdet med Vagtflow \u00b7 udviklet af Asbj\u00f8rn Langeland",pages=pdf.getNumberOfPages();
-    for(let p=1;p<=pages;p++){pdf.setPage(p);pdf.setFont("helvetica","normal");pdf.setFontSize(7);pdf.setTextColor(130,140,138);
-      pdf.text(pages>1?`${credit}  \u00b7  Side ${p} af ${pages}`:credit,pw/2,ph-5,{align:"center"})}
+    const pages=pdf.getNumberOfPages(),cm=creditMode(f);
+    for(let p=1;p<=pages;p++){
+      const parts=[];if(cm==="bottom")parts.push(CREDIT);if(pages>1)parts.push(`Side ${p} af ${pages}`);
+      if(!parts.length)continue;
+      pdf.setPage(p);pdf.setFont("helvetica","normal");pdf.setFontSize(7);pdf.setTextColor(130,140,138);
+      pdf.text(parts.join("  \u00b7  "),pw/2,ph-5,{align:"center"})}
     const blob=pdf.output("blob");
     const name=(f.name||"flow").replace(/[\\/:*?"<>|]+/g,"-").trim()||"flow",filename=`${name} ${F.lab}.pdf`;
     const downloads=window.claude?.use?await window.claude.use("downloads"):null;
