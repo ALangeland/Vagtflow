@@ -395,7 +395,7 @@ function renderSheet(){
   node.style.transformOrigin="0 0";node.style.transform=`scale(${s*z})`;
   sheet.appendChild(node);
   if(creditMode(f)==="bottom"){const c=document.createElement("div");c.className="sheet-credit";c.textContent=CREDIT;
-    c.style.fontSize=(2.47*W/pw)+"px";c.style.bottom=(3.6*W/pw)+"px";sheet.appendChild(c)}
+    c.style.fontSize=(3.0*W/pw)+"px";c.style.bottom=(3.6*W/pw)+"px";sheet.appendChild(c)}
   $("sheet-info").textContent=`${F.lab} ${F.o==="portrait"?"stående":"liggende"}`+(pages>1?` · fylder ${pages} sider i PDF'en`:"");
 }
 
@@ -452,13 +452,13 @@ function buildExport(f,widthPx,small,g=0){
     const c=okHex(s.color)?s.color:"#7d7c76";
     if(isPhase(s))return `<div style="display:flex;align-items:center;gap:14px;margin:${idx?16+g*.5:0}px 0 12px">
       <div style="width:${tw}px;flex:none"></div>
-      <div style="width:18px;flex:none;display:flex;justify-content:center"><div style="width:13px;height:13px;border-radius:3px;background:${c};border:3px solid #fff"></div></div>
+      <div style="width:18px;flex:none;display:flex;justify-content:center"><div style="position:relative;z-index:1;width:15px;height:15px;border-radius:4px;background:${c};border:3px solid #fff"></div></div>
       <div style="font-size:13px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:${mixHex(c,ink,.75)};white-space:nowrap">${esc(s.title||"Fase")}</div>
       <div style="flex:1;height:1px;background:${mixHex(c,"#ffffff",.4)}"></div></div>`;
     const {plain,bullets}=splitText(s.text),tc=mixHex(c,ink,.35);
     return `<div class="x-item" style="display:flex;align-items:center;gap:14px;margin-bottom:${12+g}px">
       <div style="width:${tw}px;flex:none;text-align:right;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;color:#5b6866">${esc(s.time)}</div>
-      <div style="width:18px;flex:none;display:flex;justify-content:center"><div style="width:12px;height:12px;border-radius:50%;background:${c};border:3px solid #fff"></div></div>
+      <div style="width:18px;flex:none;display:flex;justify-content:center"><div style="position:relative;z-index:1;width:14px;height:14px;border-radius:50%;background:${c};border:3px solid #fff"></div></div>
       <div style="flex:1;min-width:0;background:${mixHex(c,"#ffffff",.13)};border:1px solid ${mixHex(c,"#ffffff",.5)};border-radius:10px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start">
         ${s.icon&&ICONS[s.icon]?`<div style="flex:none;padding-top:1px">${iconImg(s.icon,22,mixHex(c,ink,.75))}</div>`:""}
         <div style="flex:1;min-width:0">
@@ -466,10 +466,10 @@ function buildExport(f,widthPx,small,g=0){
         ${plain.map(p=>`<div style="font-size:14px;margin-top:3px;color:${tc}">${esc(p)}</div>`).join("")}
         ${bullets.length?`<ul style="margin:5px 0 0;padding-left:20px">${bullets.map(b=>`<li style="font-size:14px;margin-top:2px;color:${tc}">${esc(b)}</li>`).join("")}</ul>`:""}
       </div></div></div>`}).join("");
-  const crTop=creditMode(f)==="top"?`<div style="font-size:11px;letter-spacing:.04em;color:#97a3a1;margin-bottom:8px;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(CREDIT)}</div>`:"";
+  const crTop=creditMode(f)==="top"?`<div style="font-size:13px;letter-spacing:.04em;color:#97a3a1;margin-bottom:8px;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(CREDIT)}</div>`:"";
   node.innerHTML=crTop+`<div style="font-size:24px;font-weight:600;margin-bottom:22px;letter-spacing:-.01em;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(f.name||"Uden titel")}</div>
     <div style="position:relative">
-      <div style="position:absolute;left:${tw+23}px;top:14px;bottom:30px;width:1px;background:#d8dfde"></div>${rows}</div>`;
+      <div style="position:absolute;z-index:0;left:${tw+23}px;top:14px;bottom:30px;width:1px;background:#d8dfde"></div>${rows}</div>`;
   document.body.appendChild(node);
   return node;
 }
@@ -520,7 +520,7 @@ $("btn-pdf").onclick=async()=>{
     for(let p=1;p<=pages;p++){
       const parts=[];if(cm==="bottom")parts.push(CREDIT);if(pages>1)parts.push(`Side ${p} af ${pages}`);
       if(!parts.length)continue;
-      pdf.setPage(p);pdf.setFont("helvetica","normal");pdf.setFontSize(7);pdf.setTextColor(130,140,138);
+      pdf.setPage(p);pdf.setFont("helvetica","normal");pdf.setFontSize(8.5);pdf.setTextColor(130,140,138);
       pdf.text(parts.join("  \u00b7  "),pw/2,ph-5,{align:"center"})}
     const blob=pdf.output("blob");
     const name=(f.name||"flow").replace(/[\\/:*?"<>|]+/g,"-").trim()||"flow",filename=`${name} ${F.lab}.pdf`;
