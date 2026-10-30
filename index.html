@@ -297,6 +297,7 @@ const ICONS={
 const iconSVG=(k,size,stroke)=>ICONS[k]?`<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${stroke||"currentColor"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k].s}</svg>`:"";
 const CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 const KEY="vagtflow-editor-v1";
+const DELETE_CODE="1234"; /* beskytter mod sletning ved en fejl – ikke en adgangskode */
 const CREDIT="Flowchart udarbejdet med Vagtflow · udviklet af Asbjørn Langeland";
 const uid=()=>Math.random().toString(36).slice(2,9);
 const todayISO=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
@@ -541,9 +542,16 @@ $("btn-dup").onclick=()=>{const c=JSON.parse(JSON.stringify(cur()));c.id=uid();c
 $("btn-example").onclick=()=>{const f=seed();f.name="ASA Vagt (eksempel)";state.flows.push(f);state.cur=f.id;open.clear();renderAll(false)};
 $("btn-del").onclick=()=>{
   const f=cur();
-  $("confirm-slot").innerHTML=`<div class="confirm"><span>Slet "${esc(f.name)}"? Du kan fortryde med Ctrl+Z.</span><button type="button" class="danger" id="yes-del">Slet</button><button type="button" id="no-del">Annullér</button></div>`;
+  $("confirm-slot").innerHTML=`<form class="confirm" id="del-form"><span>Skriv koden for at slette "${esc(f.name)}":</span>
+    <input type="password" id="del-code" inputmode="numeric" autocomplete="off" aria-label="Kode til sletning" style="width:90px">
+    <button type="submit" class="danger" id="yes-del">Slet</button><button type="button" id="no-del">Annullér</button>
+    <span id="del-err" style="color:#c0392b;font-size:13px" role="alert"></span></form>`;
+  $("del-code").focus();
+  $("del-code").oninput=()=>$("del-err").textContent="";
   $("no-del").onclick=()=>$("confirm-slot").innerHTML="";
-  $("yes-del").onclick=()=>{state.flows=state.flows.filter(x=>x.id!==f.id);
+  $("del-form").onsubmit=e=>{e.preventDefault();
+    if($("del-code").value.trim()!==DELETE_CODE){$("del-err").textContent="Forkert kode. Flowet er ikke slettet.";$("del-code").select();return}
+    state.flows=state.flows.filter(x=>x.id!==f.id);
     if(!state.flows.length){const n=seed();state.flows=[n]}state.cur=state.flows[0].id;$("confirm-slot").innerHTML="";open.clear();renderAll(false)};
 };
 

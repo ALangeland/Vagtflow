@@ -16,6 +16,7 @@ Editoren er delt i tre faneblade:
 
 Andre funktioner:
 
+- **Slet flow:** Kræver koden `1234`, så et flow ikke slettes ved en fejl. Koden er ikke en adgangskode – alle kan se den her.
 - **Fortryd og gendan:** Ctrl+Z og Ctrl+Y (Cmd på Mac) eller knapperne i værktøjslinjen.
 - **Fed skrift:** Skriv `**tekst**`, eller markér tekst og tryk **F** eller Ctrl+B. Linjer, der starter med `-`, bliver til punkter.
 - **Dato og version:** Vises øverst til højre på arket. Datoen opdateres automatisk, når flowet ændres, og "Ny version" tæller versionsnummeret op.
