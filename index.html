@@ -62,6 +62,8 @@ textarea{resize:vertical;min-height:58px}
 .step.dragging{opacity:.75;outline:2px dashed var(--accent);outline-offset:2px}
 body.is-dragging{user-select:none;cursor:grabbing}
 .hint{font-size:12px;color:var(--muted);margin:0}
+.seg{font-size:13px;padding:4px 10px}
+.seg[aria-pressed=true]{border-color:var(--accent);color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
 .preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
 .pv-title{font-size:18px;font-weight:600;margin:0}
 .tl{display:flex;flex-direction:column;gap:12px;position:relative}
@@ -124,6 +126,10 @@ body.present .grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 
       <div class="field">
         <label class="label" for="flow-name">Titel</label>
         <input type="text" id="flow-name">
+        <div class="bar" role="group" aria-label="Placering af titel" style="gap:6px;margin-top:4px">
+          <button type="button" class="seg" id="al-left" data-align="left">Venstrestillet</button>
+          <button type="button" class="seg" id="al-center" data-align="center">Centreret</button>
+        </div>
       </div>
       <div class="label">Faser og trin</div>
       <div id="steps" style="display:flex;flex-direction:column;gap:10px"></div>
@@ -207,6 +213,7 @@ function renderSelect(){
 function renderPreview(){
   const f=cur();
   $("pv-title").textContent=f.name||"Uden titel";
+  $("pv-title").style.textAlign=f.titleAlign==="center"?"center":"left";
   if(!f.steps.length){$("pv").innerHTML='<div class="empty">Tilføj et trin for at se tidslinjen.</div>';return}
   $("pv").innerHTML=f.steps.map(s=>{
     if(isPhase(s))return `<div class="tl-phase" style="--c:${esc(s.color)}"><div></div><div class="mk"></div><div class="pt">${esc(s.title||"Fase")}</div></div>`;
@@ -253,7 +260,8 @@ function renderSteps(){
   const f=cur();
   $("steps").innerHTML=f.steps.map((s,i)=>stepHTML(s,i,f.steps.length)).join("")||'<div class="empty">Ingen trin endnu.</div>';
 }
-function renderAll(){$("flow-name").value=cur().name;renderSelect();renderSteps();renderPreview();save()}
+function renderAlign(){const a=cur().titleAlign==="center"?"center":"left";$("al-left").setAttribute("aria-pressed",a==="left");$("al-center").setAttribute("aria-pressed",a==="center")}
+function renderAll(){$("flow-name").value=cur().name;renderAlign();renderSelect();renderSteps();renderPreview();save()}
 
 function setColor(f,i,newC){
   const s=f.steps[i],old=s.color;s.color=newC;
@@ -310,6 +318,7 @@ $("btn-add-phase").onclick=()=>{const f=cur(),used=f.steps.filter(isPhase).map(p
   const s={id:uid(),type:"phase",title:"",color:c};f.steps.push(s);renderSteps();renderPreview();save();
   const el=$("h-"+s.id);el&&el.focus()};
 $("flow-name").oninput=e=>{cur().name=e.target.value;renderSelect();renderPreview();save()};
+["al-left","al-center"].forEach(id=>$(id).onclick=e=>{cur().titleAlign=e.currentTarget.dataset.align;renderAlign();renderPreview();save()});
 $("flow-select").onchange=e=>{state.cur=e.target.value;renderAll()};
 $("btn-new").onclick=()=>{const f={id:uid(),name:"Nyt flow",steps:[{id:uid(),time:"",title:"",text:"",icon:"",color:PALETTE[0].h}]};state.flows.push(f);state.cur=f.id;renderAll();$("flow-name").select()};
 $("btn-example").onclick=()=>{const f=seed();f.name="ASA-vagt (eksempel)";state.flows.push(f);state.cur=f.id;renderAll()};
@@ -334,7 +343,7 @@ $("btn-import").onclick=()=>{
   let d;try{d=JSON.parse($("io-text").value)}catch(e){$("io-msg").textContent="Kunne ikke læse teksten. Indsæt JSON kopieret fra denne editor.";return}
   const arr=(Array.isArray(d)?d:[d]).filter(f=>f&&Array.isArray(f.steps));
   if(!arr.length){$("io-msg").textContent="Fandt ingen flows i teksten.";return}
-  arr.forEach(f=>{f.id=uid();f.name=String(f.name||"Importeret flow");
+  arr.forEach(f=>{f.id=uid();f.name=String(f.name||"Importeret flow");f.titleAlign=f.titleAlign==="center"?"center":"left";
     f.steps=f.steps.map(s=>{const c=okHex(s.color)?s.color:PALETTE[0].h;
       return s.type==="phase"?{id:uid(),type:"phase",title:String(s.title||""),color:c}
         :{id:uid(),time:String(s.time||""),title:String(s.title||""),text:String(s.text||""),icon:ICONS[s.icon]?s.icon:"",color:c}});
@@ -370,7 +379,7 @@ function buildExport(f,widthPx,small){
         ${plain.map(p=>`<div style="font-size:14px;margin-top:3px;color:${tc}">${esc(p)}</div>`).join("")}
         ${bullets.length?`<ul style="margin:5px 0 0;padding-left:20px">${bullets.map(b=>`<li style="font-size:14px;margin-top:2px;color:${tc}">${esc(b)}</li>`).join("")}</ul>`:""}
       </div></div></div>`}).join("");
-  node.innerHTML=`<div style="font-size:24px;font-weight:600;margin-bottom:22px;letter-spacing:-.01em">${esc(f.name||"Uden titel")}</div>
+  node.innerHTML=`<div style="font-size:24px;font-weight:600;margin-bottom:22px;letter-spacing:-.01em;text-align:${f.titleAlign==="center"?"center":"left"}">${esc(f.name||"Uden titel")}</div>
     <div style="position:relative">
       <div style="position:absolute;left:${tw+23}px;top:14px;bottom:30px;width:1px;background:#d8dfde"></div>${rows}</div>`;
   document.body.appendChild(node);
