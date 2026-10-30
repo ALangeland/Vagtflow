@@ -63,6 +63,9 @@ textarea{resize:vertical;min-height:58px}
 body.is-dragging{user-select:none;cursor:grabbing}
 .hint{font-size:12px;color:var(--muted);margin:0}
 .seg{font-size:13px;padding:4px 10px}
+.savest{font-size:13px;color:var(--muted)}
+.savest.ok{color:var(--accent);font-weight:500}
+.savest.err{color:#c0392b}
 .seg[aria-pressed=true]{border-color:var(--accent);color:var(--accent);font-weight:500;background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
 .preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
 .pv-title{font-size:18px;font-weight:600;margin:0}
@@ -114,6 +117,8 @@ body.present .grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 
   <div class="bar tools">
     <label class="label" for="flow-select">Flow</label>
     <select id="flow-select" style="width:auto;min-width:180px"></select>
+    <button id="btn-save" type="button" class="primary">Gem flow</button>
+    <span id="save-status" class="savest" role="status"></span>
     <button id="btn-new" type="button">Nyt flow</button>
     <button id="btn-dup" type="button">Dupliker</button>
     <button id="btn-example" type="button">Indlæs ASA-eksempel</button>
@@ -148,6 +153,11 @@ body.present .grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 
             <button id="btn-export" type="button">Kopiér dette flow</button>
             <button id="btn-export-all" type="button">Kopiér alle flows</button>
             <button id="btn-import" type="button">Importér</button>
+          </div>
+          <div class="bar">
+            <button id="btn-savefile" type="button">Gem flow som fil</button>
+            <button id="btn-openfile" type="button">Åbn fil</button>
+            <input type="file" id="file-in" accept=".json,application/json" hidden>
           </div>
           <div class="toast" id="io-msg" role="status"></div>
         </div>
@@ -198,7 +208,16 @@ const seed=()=>({id:uid(),name:"ASA-vagt",steps:[
 let state;
 try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!state||!Array.isArray(state.flows)||!state.flows.length){const f=seed();state={flows:[f],cur:f.id}}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const hhmm=()=>new Date().toLocaleTimeString("da-DK",{hour:"2-digit",minute:"2-digit"});
+let stTimer;
+const save=(manual)=>{
+  const el=document.getElementById("save-status");
+  try{localStorage.setItem(KEY,JSON.stringify(state));
+    if(el){el.className="savest"+(manual?" ok":"");el.textContent=(manual?"Flow gemt kl. ":"Gemt automatisk kl. ")+hhmm();
+      if(manual){clearTimeout(stTimer);stTimer=setTimeout(()=>el.className="savest",2500)}}
+    return true}
+  catch(e){if(el){el.className="savest err";el.textContent="Kunne ikke gemme i browseren. Brug \"Gem flow som fil\"."}return false}
+};
 const cur=()=>state.flows.find(f=>f.id===state.cur)||state.flows[0];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=id=>document.getElementById(id);
@@ -339,8 +358,10 @@ function copyOut(txt){
 }
 $("btn-export").onclick=()=>copyOut(JSON.stringify(cur(),null,2));
 $("btn-export-all").onclick=()=>copyOut(JSON.stringify(state.flows,null,2));
-$("btn-import").onclick=()=>{
-  let d;try{d=JSON.parse($("io-text").value)}catch(e){$("io-msg").textContent="Kunne ikke læse teksten. Indsæt JSON kopieret fra denne editor.";return}
+$("btn-save").onclick=()=>save(true);
+$("btn-import").onclick=()=>importText($("io-text").value);
+function importText(txt){
+  let d;try{d=JSON.parse(txt)}catch(e){$("io-msg").textContent="Kunne ikke læse teksten. Indsæt JSON kopieret fra denne editor.";return}
   const arr=(Array.isArray(d)?d:[d]).filter(f=>f&&Array.isArray(f.steps));
   if(!arr.length){$("io-msg").textContent="Fandt ingen flows i teksten.";return}
   arr.forEach(f=>{f.id=uid();f.name=String(f.name||"Importeret flow");f.titleAlign=f.titleAlign==="center"?"center":"left";
@@ -349,7 +370,25 @@ $("btn-import").onclick=()=>{
         :{id:uid(),time:String(s.time||""),title:String(s.title||""),text:String(s.text||""),icon:ICONS[s.icon]?s.icon:"",color:c}});
     state.flows.push(f)});
   state.cur=arr[arr.length-1].id;renderAll();$("io-msg").textContent=`Importerede ${arr.length} flow${arr.length>1?"s":""}.`;
+}
+const safeName=n=>(n||"flow").replace(/[\\/:*?"<>|]+/g,"-").trim()||"flow";
+async function saveFile(filename,data,mime){
+  const dl=window.claude?.use?await window.claude.use("downloads"):null;
+  if(dl){await dl.save({filename,data});return true}
+  if(window.claude)return false;
+  const url=URL.createObjectURL(new Blob([data],{type:mime})),a=document.createElement("a");
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);return true;
+}
+$("btn-savefile").onclick=async()=>{
+  const f=cur(),msg=$("io-msg");
+  try{const ok=await saveFile(safeName(f.name)+".json",JSON.stringify(f,null,2),"application/json");
+    msg.textContent=ok?"Flowet er gemt som fil. Åbn den igen med \"Åbn fil\".":"Gem-funktionen er ikke tilgængelig i denne visning."}
+  catch(e){msg.textContent=e&&e.code==="declined"?"Gemning annulleret.":"Filen kunne ikke gemmes. Prøv igen."}
 };
+$("btn-openfile").onclick=()=>$("file-in").click();
+$("file-in").onchange=e=>{const file=e.target.files&&e.target.files[0];if(!file)return;
+  const r=new FileReader();r.onload=()=>{importText(String(r.result));e.target.value=""};
+  r.onerror=()=>$("io-msg").textContent="Filen kunne ikke læses.";r.readAsText(file)};
 
 /* PDF-eksport: fast lyst layout, uafhængigt af skærmens tema. Samme indhold i alle formater. */
 const FORMATS={a4p:{f:"a4",o:"portrait",mm:[210,297],px:794,lab:"A4"},a4l:{f:"a4",o:"landscape",mm:[297,210],px:1123,lab:"A4"},

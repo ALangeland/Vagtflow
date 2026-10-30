@@ -25,7 +25,9 @@ Har du allerede egne flows, kan du hente eksemplet ind med knappen **Indlæs ASA
 
 ## Data
 
-Flows gemmes kun i den browser, du bruger (`localStorage`). Brug "Backup og import" til at kopiere dine flows som JSON og flytte dem til en anden computer eller browser.
+Ændringer gemmes automatisk i den browser, du bruger (`localStorage`), og du kan trykke **Gem flow** for at gemme med det samme. Status ved knappen viser, hvornår der sidst er gemt.
+
+Vil du have flowet med til en anden computer eller browser, så brug **Gem flow som fil** under "Backup og import" og åbn filen igen med **Åbn fil**.
 
 Skriv aldrig patientoplysninger i flows – de er beregnet til arbejdsgange.
 
