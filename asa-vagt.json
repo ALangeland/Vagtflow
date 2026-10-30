@@ -1,0 +1,50 @@
+{
+  "name": "ASA-vagt",
+  "steps": [
+    {
+      "type": "phase",
+      "title": "Eftermiddag",
+      "color": "#1d9e75"
+    },
+    {
+      "time": "Inden 17:00",
+      "title": "Fordel ufordelte patienter på Cetrea",
+      "text": "Akut medicin → lunge, gastro, infektion, endokrinologi, nyre",
+      "color": "#1d9e75",
+      "icon": "fordel"
+    },
+    {
+      "time": "Inden 17:00",
+      "title": "Opret stuegangsaktivitet på Cetrea-tavlen",
+      "text": "Så specialisterne kan se, hvem de går stuegang på",
+      "color": "#1d9e75",
+      "icon": "tavle"
+    },
+    {
+      "type": "phase",
+      "title": "Morgen",
+      "color": "#6a5fd0"
+    },
+    {
+      "time": "Morgen",
+      "title": "Find patient til Hobro",
+      "text": "Skriv gennemgangsnotat – og se helst patienten",
+      "color": "#6a5fd0",
+      "icon": "notat"
+    },
+    {
+      "time": "07:30",
+      "title": "Meld patienten til Hobro",
+      "text": "",
+      "color": "#6a5fd0",
+      "icon": "telefon"
+    },
+    {
+      "time": "Konference",
+      "title": "Fælles morgenkonference",
+      "text": "- Print stuegangsseddel via Skyprint\n- Præsentér dårlige patienter fra vagten\n- Nævn totalt antal indlagte",
+      "color": "#6a5fd0",
+      "icon": "konference"
+    }
+  ]
+}

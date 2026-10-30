@@ -109,6 +109,7 @@ body.present .grid{grid-template-columns:minmax(0,1fr);max-width:760px;margin:0 
     <select id="flow-select" style="width:auto;min-width:180px"></select>
     <button id="btn-new" type="button">Nyt flow</button>
     <button id="btn-dup" type="button">Dupliker</button>
+    <button id="btn-example" type="button">Indlæs ASA-eksempel</button>
     <button id="btn-del" type="button" class="danger">Slet flow</button>
   </div>
   <div id="confirm-slot"></div>
@@ -282,6 +283,7 @@ $("btn-add-phase").onclick=()=>{const f=cur(),used=f.steps.filter(isPhase).map(p
 $("flow-name").oninput=e=>{cur().name=e.target.value;renderSelect();renderPreview();save()};
 $("flow-select").onchange=e=>{state.cur=e.target.value;renderAll()};
 $("btn-new").onclick=()=>{const f={id:uid(),name:"Nyt flow",steps:[{id:uid(),time:"",title:"",text:"",icon:"",color:PALETTE[0].h}]};state.flows.push(f);state.cur=f.id;renderAll();$("flow-name").select()};
+$("btn-example").onclick=()=>{const f=seed();f.name="ASA-vagt (eksempel)";state.flows.push(f);state.cur=f.id;renderAll()};
 $("btn-dup").onclick=()=>{const c=JSON.parse(JSON.stringify(cur()));c.id=uid();c.name+=" (kopi)";c.steps.forEach(s=>s.id=uid());state.flows.push(c);state.cur=c.id;renderAll()};
 $("btn-del").onclick=()=>{
   const f=cur();

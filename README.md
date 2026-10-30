@@ -13,6 +13,15 @@ En lille editor til at bygge tidslinjer for vagtfunktioner – fx ASA-vagten –
 - **PDF:** Vælg A4 eller A5, stående eller liggende, og tryk "Gem som PDF". Lange flows deles over flere sider mellem trinene.
 - **Visningstilstand:** Skjuler editoren, så kun tidslinjen vises.
 
+## Eksempel: ASA-vagt
+
+Editoren starter med ASA-vagten som eksempel, delt i to faser:
+
+- **Eftermiddag (inden 17:00):** Fordel ufordelte patienter på Cetrea mellem lunge, gastro, infektion, endokrinologi og nyre, og opret stuegangsaktivitet på Cetrea-tavlen.
+- **Morgen:** Find patient til Hobro og skriv gennemgangsnotat, meld patienten til Hobro kl. 07.30, og til morgenkonferencen printes stuegangsseddel via Skyprint, dårlige patienter præsenteres, og antal indlagte nævnes.
+
+Har du allerede egne flows, kan du hente eksemplet ind med knappen **Indlæs ASA-eksempel**. Det ligger også som [asa-vagt.json](asa-vagt.json), som kan indsættes under "Backup og import".
+
 ## Data
 
 Flows gemmes kun i den browser, du bruger (`localStorage`). Brug "Backup og import" til at kopiere dine flows som JSON og flytte dem til en anden computer eller browser.
